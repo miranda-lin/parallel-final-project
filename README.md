@@ -1,5 +1,7 @@
 # Parallel Othello Solver
+
 15-418 Final Project Spring 2022
+
 Miranda Lin (miranda1), Ashwin Srinivasan (ashwins)
 
 ## Summary
