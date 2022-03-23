@@ -49,22 +49,22 @@ No datasets will be used for this project as we will be implementing the Othello
 # Schedule
 
 **Week of 3/28:**
-Research parallelization strategies for Othello solver
-Implement Othello game
+ - Research parallelization strategies for Othello solver
+ - Implement Othello game
 
 **Week of 4/4:**
-Implement Othello solver using minimax/alphabeta
-Write checkpoint report
+ - Implement Othello solver using minimax/alphabeta
+ - Write checkpoint report
 
 **Week of 4/11 (Checkpoint on M 4/11):**
-Parallelize solver
-Explore alternative approaches
+ - Parallelize solver
+ - Explore alternative approaches
 
 **Week of 4/18:**
-Performance analysis on approach, tune parameters
+ - Performance analysis on approach, tune parameters
 
 **Week of 4/25 (Report on F 4/29):**
-Wrap-up, write report
+ - Wrap-up, write report
 
 **Week of 5/2 (Presentation on Th 5/5):**
-Work on presentation
+ - Work on presentation
