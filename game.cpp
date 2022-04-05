@@ -1,9 +1,10 @@
 #define ROWS 8
 #define COLS 8
 
+#include <string>
 #include <vector>
 
-#include "square.cpp"
+#include "player.cpp"
 
 using namespace std;
 
@@ -90,6 +91,53 @@ class Game {
     return moves;
   }
 
+  bool is_over(Player *winner, bool *tie) {
+    if (!list_legal_moves().empty()) {
+      return false;
+    }
+
+    int black_pts = 0;
+    int white_pts = 0;
+    for (int i = 0; i < ROWS; i++) {
+      for (int j = 0; j < COLS; j++) {
+        if (board[i][j] == BLACK) {
+          black_pts++;
+        } else if (board[i][j] == WHITE) {
+          white_pts++;
+        }
+      }
+    }
+
+    if (black_pts < white_pts) {
+      *winner = WHITE;
+    } else if (black_pts > white_pts) {
+      *winner = BLACK;
+    } else {
+      *tie = true;
+    }
+
+    return true;
+  }
+
+  Player get_cur_player() { return cur_player; }
+
+  string print_board() {
+    string output = "";
+    for (int i = 0; i < ROWS; i++) {
+      for (int j = 0; j < COLS; j++) {
+        if (board[i][j] == BLACK) {
+          output.append("X");
+        } else if (board[i][j] == WHITE) {
+          output.append("O");
+        } else {
+          output.append(" ");
+        }
+      }
+      output.append("\n");
+    }
+    return output;
+  }
+
   Game() {
     cur_player = BLACK;
 
@@ -117,8 +165,6 @@ class Game {
     if (board[move.loc.row][move.loc.col] != NONE) {
       return false;
     }
-
-    // TODO: check move
 
     for (int i = 0; i < 8; i++) {
       coord_t direction = FLANK_DIRECTIONS[i];
