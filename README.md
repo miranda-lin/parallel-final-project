@@ -68,3 +68,47 @@ No datasets will be used for this project as we will be implementing the Othello
 
 **Week of 5/2 (Presentation on Th 5/5):**
  - Work on presentation
+
+
+# MILESTONE
+
+So far, we have implemented a version of Othello that takes in user input for each move and plays the game out. We have begun implementing a minimax solver, and have immediate plans for altering it to also allow for alphabeta pruning as well. When structuring our code, we designed it to be amenable for parallelization using OpenMP. As we explored the solver code, we found that OpenMP is likely our best choice for parallelization. We eliminated MPI due to the high communication costs, and we noticed that if we wanted to use CUDA we would have likely be bound by the memory costs to copy the game state to and from the device and host. Thus we decided to primarily use OpenMP to parallelize our solver.
+
+We plan to create multiple versions of the solver including a sequential minimax, sequential alphabeta, and parallelized versions of both. This will be easily swapped out with our game implementation through subclassing.
+
+With respect to the goals we had originally set, we are fairly on schedule as we have implemented the game as well as the minimax solver. Though we have not yet implemented the alphabeta solver, we anticipate that this will not be much additional work as we designed our code in a modular fashion. We are a few days behind our internal schedule, as we received proposal feedback later than we had anticipated, particularly because it was so close to the spring carnival break. In addition, we expect that we will have less time this week to work on the project due to the exam. However, we expect that we will still be able to produce all of our deliverables especially with the additional time we have in the next few weeks. For our nice-to-haves, we expect that will depend on how performance tuning goes.
+
+At the poster session, we will show a demo of our parallel Othello solver as well as graphs showing the speedups comparing the various versions of our solver.
+
+Some possible issues we may have to deal with include dealing with memory bottlenecks, optimizing locality, and not knowing the upper bound of performance. We would also ideally like to explore a different method of parallelization such as CUDA or Cilk in order to compare speedups, but we’re not certain whether this will provide significant improvements for the amount of time it will take, as we may need to restructure our code significantly for these. Therefore, we have added those to our stretch goals. In addition, there may be better game-solving algorithms that we aren’t familiar with and may perform better. Therefore, we will also explore those during our performance tuning if we’re not seeing enough improvement. In general, we have a set plan and most of our unknowns are related to our stretch goals.
+
+## Updated Goals and deliverables
+
+- [50%] Othello game implementation that accepts user input
+- [50%] Sequential minimax solver for Othello
+- [75%] Parallel minimax Othello solver
+- [75%] Sequential alpha-beta pruning in solver
+- [100%] Fully parallel Othello solver (including alpha-beta pruning)
+- [125%] Parallel Othello solver using some other optimization revealed via performance testing
+- [125%] Visualization of Othello solver output
+- [125%] Parallel solver implementations using Cilk or CUDA
+
+## Updated Schedule
+
+**Week of 4/11 (Checkpoint on M 4/11):**
+- Parallelize minimax solver using OpenMP
+- Work on alphabeta solver
+
+**Week of 4/18:**
+- Parallelize alphabeta solver
+- Performance analysis on minimax and alpha beta solvers, tune parameters
+
+**Week of 4/25 (Report on F 4/29):**
+- Further performance tuning
+- Explorations with other algorithms or resources (CUDA, Cilk) if time allows
+- Work on report
+
+**Week of 5/2 (Presentation on Th 5/5):**
+- Visualization implementation (if time)
+- Work on presentation
+
