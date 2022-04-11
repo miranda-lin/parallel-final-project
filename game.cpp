@@ -4,19 +4,9 @@
 #include <string>
 #include <vector>
 
-#include "player.cpp"
+#include "util.cpp"
 
 using namespace std;
-
-struct coord_t {
-  int row;
-  int col;
-};
-
-struct move_t {
-  Player player;
-  coord_t loc;
-};
 
 coord_t UP = (coord_t){-1, 0};
 coord_t DOWN = (coord_t){1, 0};
@@ -45,9 +35,66 @@ class Game {
     return moves;
   }
 
-  bool submit_move(int row, int col) {
-    return make_move((move_t){.player = cur_player,
-                              .loc = (coord_t){.row = row, .col = col}});
+  Game *make_move(move_t move) {
+    if (!is_move_legal(move)) {
+      return NULL;
+    }
+
+    // copy the current game state
+    Game *next_state = new Game();
+    next_state->cur_player = cur_player;
+    for (int i = 0; i < ROWS; i++) {
+      for (int j = 0; j < COLS; j++) {
+        next_state->board[i][j] = board[i][j];
+      }
+    }
+
+    // get the board pieces to flip
+    vector<coord_t> all_to_flip;
+    for (int i = 0; i < 8; i++) {
+      coord_t direction = FLANK_DIRECTIONS[i];
+      coord_t cur_pos = move.loc;
+      vector<coord_t> to_flip;  // temp vector
+
+      do {
+        cur_pos.row += direction.row;
+        cur_pos.col += direction.col;
+        Player piece = next_state->board[cur_pos.row][cur_pos.col];
+
+        if (piece == move.player) {
+          all_to_flip.insert(all_to_flip.end(), to_flip.begin(), to_flip.end());
+          break;
+        } else if (piece == NONE) {
+          break;
+        }
+
+        to_flip.push_back(cur_pos);
+      } while (is_coord_legal(cur_pos));
+    }
+
+    // flip the pieces
+    for (coord_t pos : all_to_flip) {
+      next_state->board[pos.row][pos.col] = move.player;
+    }
+
+    // place the new piece
+    next_state->board[move.loc.row][move.loc.col] = move.player;
+
+    // swap players
+    if (next_state->cur_player == BLACK) {
+      next_state->cur_player = WHITE;
+    } else {
+      assert(next_state->cur_player == WHITE);
+      next_state->cur_player = BLACK;
+    }
+
+    // return new game state
+    return next_state;
+  }
+
+  move_t get_move(int row, int col) {
+    return (move_t){.player = cur_player,
+                    .loc = (coord_t){.row = row, .col = col}};
   }
 
   bool is_over(Player *winner, bool *tie) {
@@ -80,9 +127,19 @@ class Game {
 
   Player get_cur_player() { return cur_player; }
 
+  Player get_square(int row, int col) { return board[row][col]; }
+
   string print_board() {
-    string output = "";
+    string output = "  ";
+    for (int j = 0; j < COLS; j++) {
+      output.append(to_string(j));
+      output.append(" ");
+    }
+    output.append("\n");
     for (int i = 0; i < ROWS; i++) {
+      output.append(to_string(i));
+      output.append(" ");
+
       for (int j = 0; j < COLS; j++) {
         if (board[i][j] == BLACK) {
           output.append("X");
@@ -91,6 +148,7 @@ class Game {
         } else {
           output.append(" ");
         }
+        output.append(" ");
       }
       output.append("\n");
     }
@@ -152,51 +210,5 @@ class Game {
     }
 
     return false;
-  }
-
-  bool make_move(move_t move) {
-    if (!is_move_legal(move)) {
-      return false;
-    }
-
-    // get the board pieces to flip
-    vector<coord_t> all_to_flip;
-    for (int i = 0; i < 8; i++) {
-      coord_t direction = FLANK_DIRECTIONS[i];
-      coord_t cur_pos = move.loc;
-      vector<coord_t> to_flip;  // temp vector
-
-      do {
-        cur_pos.row += direction.row;
-        cur_pos.col += direction.col;
-        Player piece = board[cur_pos.row][cur_pos.col];
-
-        if (piece == move.player) {
-          all_to_flip.insert(all_to_flip.end(), to_flip.begin(), to_flip.end());
-          break;
-        } else if (piece == NONE) {
-          break;
-        }
-
-        to_flip.push_back(cur_pos);
-      } while (is_coord_legal(cur_pos));
-    }
-
-    // flip the pieces
-    for (coord_t pos : all_to_flip) {
-      board[pos.row][pos.col] = move.player;
-    }
-
-    // place the new piece
-    board[move.loc.row][move.loc.col] = move.player;
-
-    // swap players
-    if (cur_player == BLACK) {
-      cur_player = WHITE;
-    } else {
-      assert(cur_player == WHITE);
-      cur_player = BLACK;
-    }
-    return true;
   }
 };
