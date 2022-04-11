@@ -76,7 +76,7 @@ So far, we have implemented a version of Othello that takes in user input for ea
 
 We plan to create multiple versions of the solver including a sequential minimax, sequential alphabeta, and parallelized versions of both. This will be easily swapped out with our game implementation through subclassing.
 
-With respect to the goals we had originally set, we are fairly on schedule as we have implemented the game as well as the minimax solver. Though we have not yet implemented the alphabeta solver, we anticipate that this will not be much additional work as we designed our code in a modular fashion. We are a few days behind our internal schedule, as we received proposal feedback later than we had anticipated, particularly because it was so close to the spring carnival break. In addition, we expect that we will have less time this week to work on the project due to the exam. However, we expect that we will still be able to produce all of our deliverables especially with the additional time we have in the next few weeks. For our nice-to-haves, we expect that will depend on how performance tuning goes.
+With respect to the goals we had originally set, we are fairly on schedule as we have implemented the game as well as the minimax solver. Though we have not yet implemented the alphabeta solver, we anticipate that this will not be much additional work as we designed our code in a modular fashion. We still need to tune the heuristic for our solver, as we would like to create an estimator that performs well but also is fast to improve our searching. We are a few days behind our internal schedule, as we received proposal feedback later than we had anticipated, particularly because it was so close to the spring carnival break. In addition, we expect that we will have less time this week to work on the project due to the exam. However, we expect that we will still be able to produce all of our deliverables especially with the additional time we have in the next few weeks. For our nice-to-haves, we expect that will depend on how performance tuning goes.
 
 At the poster session, we will show a demo of our parallel Othello solver as well as graphs showing the speedups comparing the various versions of our solver.
 
@@ -98,6 +98,7 @@ Some possible issues we may have to deal with include dealing with memory bottle
 **Week of 4/11 (Checkpoint on M 4/11):**
 - Parallelize minimax solver using OpenMP
 - Work on alphabeta solver
+- Tune estimator heuristics
 
 **Week of 4/18:**
 - Parallelize alphabeta solver
