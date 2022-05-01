@@ -4,10 +4,15 @@
 #include "alphabeta.h"
 #include "game.h"
 #include "minimax.h"
+#include "paraalphabeta.h"
 #include "paraminimax.h"
 #include "player.h"
 
 using namespace std;
+
+using namespace chrono;
+typedef chrono::high_resolution_clock Clock;
+typedef chrono::duration<double> dsec;
 
 int main() {
   Game *game = new Game();
@@ -15,6 +20,7 @@ int main() {
   AlphaBeta alphabeta;
 
   ParaMiniMax paraminimax;
+  ParaAlphaBeta paraalphabeta;
 
   cout << "1 - minimax, 2 - alphabeta, 3 - paraminimax, 4 - paraalphabeta\n";
   cout << "Choose a solver: ";
@@ -33,8 +39,8 @@ int main() {
       solver = &paraminimax;
       break;
     case 4:
-      cout << "Solver not implemented\n";
-      return 1;
+      solver = &paraalphabeta;
+      break;
     default:
       cout << "Invalid choice\n";
       return 1;
@@ -61,10 +67,6 @@ int main() {
       return 1;
   }
 
-  using namespace chrono;
-  typedef chrono::high_resolution_clock Clock;
-  typedef chrono::duration<double> dsec;
-
   auto compute_start = Clock::now();
   double compute_time = 0;
 
@@ -73,14 +75,14 @@ int main() {
   do {
     if (print_output) {
       cout << game->print_board();
-      cout << "Current player: ";
-      if (game->get_cur_player() == Player::BLACK) {
-        cout << "X";
-      } else {
-        cout << "O";
-      }
-      cout << "\n";
     }
+    cout << "Current player: ";
+    if (game->get_cur_player() == Player::BLACK) {
+      cout << "X";
+    } else {
+      cout << "O";
+    }
+    cout << "\n";
 
     while (true) {
       auto move_start = Clock::now();

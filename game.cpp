@@ -51,6 +51,11 @@ Game *Game::make_move(move_t move) {
     do {
       cur_pos.row += direction.row;
       cur_pos.col += direction.col;
+      if (cur_pos.row < 0 || cur_pos.col < 0 || ROWS <= cur_pos.row ||
+          COLS <= cur_pos.col) {
+        break;
+      }
+
       Player piece = next_state->board[cur_pos.row][cur_pos.col];
 
       if (piece == move.player) {
@@ -185,6 +190,11 @@ bool Game::is_move_legal(move_t move) {
     do {
       cur_pos.row += direction.row;
       cur_pos.col += direction.col;
+      if (cur_pos.row < 0 || cur_pos.col < 0 || ROWS <= cur_pos.row ||
+          COLS <= cur_pos.col) {
+        break;
+      }
+
       Player piece = board[cur_pos.row][cur_pos.col];
 
       if (piece == move.player) {

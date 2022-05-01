@@ -5,7 +5,7 @@
 #include "solver.h"
 #include "util.h"
 
-class AlphaBeta : public Solver {
+class ParaAlphaBeta : public Solver {
  public:
   int solve(Game *node, int depth, move_t *best_move) {
     return solve_helper(node, depth, best_move, NINF, PINF);
@@ -27,8 +27,17 @@ class AlphaBeta : public Solver {
     bool is_maxie = node->get_cur_player() == MAXIE;
     bool is_minie = node->get_cur_player() == MINIE;
 
+    volatile bool should_break = false;
+
     int cur_best = is_maxie ? NINF : PINF;
-    for (move_t move : moves) {
+#pragma omp parallel for schedule(dynamic) shared(should_break)
+    for (size_t i = 0; i < moves.size(); i++) {
+      if (should_break) {
+        continue;
+      }
+
+      move_t move = moves.at(i);
+
       Game *child = node->make_move(move);
       move_t child_best_move;
       int value = solve_helper(child, depth - 1, &child_best_move, alpha, beta);
@@ -39,13 +48,13 @@ class AlphaBeta : public Solver {
       }
 
       if ((is_maxie && value >= beta) || (is_minie && value <= alpha)) {
-        break;
-      }
-
-      if (is_maxie && value > alpha) {
-        alpha = value;
-      } else if (is_minie && value < beta) {
-        beta = value;
+        should_break = true;
+      } else {
+        if (is_maxie && value > alpha) {
+          alpha = value;
+        } else if (is_minie && value < beta) {
+          beta = value;
+        }
       }
 
       delete child;

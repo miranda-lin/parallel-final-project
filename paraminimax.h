@@ -1,8 +1,10 @@
+#include <omp.h>
+
 #include "game.h"
 #include "move.h"
-#include "parasolver.h"
+#include "solver.h"
 
-class ParaMiniMax : public ParaSolver {
+class ParaMiniMax : public Solver {
  public:
   int solve(Game *node, int depth, move_t *best_move) {
     if (depth == 0) {
@@ -10,17 +12,25 @@ class ParaMiniMax : public ParaSolver {
     }
 
     auto moves = node->list_legal_moves();
+    if (moves.size() == 0) {
+      return evaluate_state(node);
+    }
 
-    int cur_best;
+    bool is_maxie = node->get_cur_player() == MAXIE;
+    bool is_minie = node->get_cur_player() == MINIE;
+
+    int cur_best = 0;
     bool has_best = false;
-#pragma omp parallel
-    for (move_t move : moves) {
+#pragma omp parallel for schedule(dynamic)
+    for (size_t i = 0; i < moves.size(); i++) {
+      move_t move = moves.at(i);
+
       Game *child = node->make_move(move);
       move_t child_best_move;  // placeholder
       int value = solve(child, depth - 1, &child_best_move);
 
-      if (!has_best || (node->get_cur_player() == MAXIE && value > cur_best) ||
-          (node->get_cur_player() == MINIE && value < cur_best)) {
+      if (!has_best || (is_maxie && value > cur_best) ||
+          (is_minie && value < cur_best)) {
         cur_best = value;
         *best_move = move;
 
@@ -29,7 +39,6 @@ class ParaMiniMax : public ParaSolver {
 
       delete child;
     }
-#pragma omp barrier
 
     return cur_best;
   }
