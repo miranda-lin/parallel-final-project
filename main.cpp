@@ -1,9 +1,11 @@
 #include <iostream>
 
-#include "game.cpp"
-#include "minimax.cpp"
+#include "alphabeta.h"
+#include "game.h"
+#include "minimax.h"
+#include "player.h"
 
-#define AI_PLAYER WHITE
+#define AI_PLAYER (Player::WHITE)
 #define SEARCH_DEPTH 5
 
 using namespace std;
@@ -11,13 +13,16 @@ using namespace std;
 int main() {
   Game *game = new Game();
   MiniMax minimax;
+  AlphaBeta alphabeta;
+
+  Solver *solver = &alphabeta;
 
   Player winner;
   bool tie = false;
   do {
     cout << game->print_board();
     cout << "Current player: ";
-    if (game->get_cur_player() == BLACK) {
+    if (game->get_cur_player() == Player::BLACK) {
       cout << "X";
     } else {
       cout << "O";
@@ -27,7 +32,7 @@ int main() {
     while (true) {
       move_t move;
       if (game->get_cur_player() == AI_PLAYER) {
-        int score = minimax.solve(game, SEARCH_DEPTH, &move);
+        int score = solver->solve(game, SEARCH_DEPTH, &move);
         cout << "AI move (" << move.loc.row << ", " << move.loc.col
              << ") score: " << score << "\n";
       } else {
@@ -55,7 +60,7 @@ int main() {
     cout << "It was a tie\n";
   } else {
     cout << "The winner is: ";
-    if (winner == BLACK) {
+    if (winner == Player::BLACK) {
       cout << "X";
     } else {
       cout << "O";

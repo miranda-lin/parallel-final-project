@@ -1,8 +1,6 @@
-#include <vector>
-
-using namespace std;
-
-#include "solver.cpp"
+#include "game.h"
+#include "move.h"
+#include "solver.h"
 
 class MiniMax : public Solver {
  public:
