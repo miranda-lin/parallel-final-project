@@ -1,5 +1,7 @@
 #include "game.h"
 
+#include <assert.h>
+
 coord_t UP = (coord_t){-1, 0};
 coord_t DOWN = (coord_t){1, 0};
 coord_t LEFT = (coord_t){0, -1};
