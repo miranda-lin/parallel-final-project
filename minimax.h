@@ -1,8 +1,8 @@
 #include "game.h"
 #include "move.h"
-#include "solver.h"
+#include "seqsolver.h"
 
-class MiniMax : public Solver {
+class MiniMax : public SeqSolver {
  public:
   int solve(Game *node, int depth, move_t *best_move) {
     if (depth == 0) {

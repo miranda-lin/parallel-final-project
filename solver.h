@@ -11,7 +11,7 @@ class Solver {
   Solver() {}
 
  protected:
-  int evaluate_state(Game *node);
+  virtual int evaluate_state(Game *node) = 0;
 };
 
 #endif

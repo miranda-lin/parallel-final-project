@@ -7,7 +7,7 @@ CXXFLAGS = -I. -O3 -Wall -Wno-unknown-pragmas
 
 default: $(APP_NAME)
 
-$(APP_NAME): $(OBJS)
+$(APP_NAME): $(OBJS) *.h
 	$(CXX) $(CXXFLAGS) -o $@ $(OBJS)
 
 clean:
