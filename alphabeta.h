@@ -39,6 +39,7 @@ class AlphaBeta : public Solver {
       }
 
       if ((is_maxie && value >= beta) || (is_minie && value <= alpha)) {
+        delete child;
         break;
       }
 
