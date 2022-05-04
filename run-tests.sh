@@ -15,11 +15,11 @@ do
       for n in "${core_counts[@]}"
       do
         echo "${solver}: d = ${d}, n = ${n}"
-        (timeout 1200 ./othello_bench ${n} ${solver} ${d} || echo "timed out") > ${solver}_${d}_${n}.txt
+        (timeout 600 ./othello_bench ${n} ${solver} ${d} || echo "timed out") > ${solver}_${d}_${n}.txt
       done
     else
       echo "${solver}: d = ${d}, n = 1"
-      (timeout 1200 ./othello_bench 1 ${solver} ${d} || echo "timed out") > ${solver}_${d}_1.txt
+      (timeout 600 ./othello_bench 1 ${solver} ${d} || echo "timed out") > ${solver}_${d}_1.txt
     fi
   done
 done
