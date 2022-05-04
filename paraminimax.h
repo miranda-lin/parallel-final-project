@@ -1,8 +1,10 @@
+#include <assert.h>
 #include <omp.h>
 
 #include "game.h"
 #include "move.h"
 #include "solver.h"
+#include "util.h"
 
 class ParaMiniMax : public Solver {
  public:
@@ -19,8 +21,7 @@ class ParaMiniMax : public Solver {
     bool is_maxie = node->get_cur_player() == MAXIE;
     bool is_minie = node->get_cur_player() == MINIE;
 
-    int cur_best = 0;
-    bool has_best = false;
+    int cur_best = is_maxie ? NINF : PINF;
 #pragma omp parallel for schedule(dynamic)
     for (size_t i = 0; i < moves.size(); i++) {
       move_t move = moves.at(i);
@@ -29,16 +30,16 @@ class ParaMiniMax : public Solver {
       move_t child_best_move;  // placeholder
       int value = solve(child, depth - 1, &child_best_move);
 
-      if (!has_best || (is_maxie && value > cur_best) ||
-          (is_minie && value < cur_best)) {
+      if ((is_maxie && value > cur_best) || (is_minie && value < cur_best)) {
         cur_best = value;
         *best_move = move;
-
-        has_best = true;
       }
 
       delete child;
     }
+
+    assert(cur_best != NINF);
+    assert(cur_best != PINF);
 
     return cur_best;
   }
