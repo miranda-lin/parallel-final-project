@@ -1,0 +1,135 @@
+<html>
+
+<head>
+  <script>
+    const rows = 8, cols = 8;
+
+    const squares = [];
+
+    function setup() {
+      // make the board
+      const board = document.getElementById('board');
+
+      const first_row = board.insertRow(0);
+      first_row.insertCell(0);
+      for (let j = 0; j < cols; j++) {
+        const cell = first_row.insertCell(j + 1);
+        cell.classList.add('label');
+        cell.innerHTML = j;
+      }
+
+      for (let i = 0; i < rows; i++) {
+        const row = board.insertRow(i + 1);
+
+        const col_label = row.insertCell(0);
+        col_label.classList.add('label');
+        col_label.innerHTML = i;
+
+        const row_squares = [];
+        for (let j = 0; j < cols; j++) {
+          const cell = row.insertCell(j + 1);
+          cell.classList.add('square');
+          row_squares.push(cell);
+        }
+
+        squares.push(row_squares);
+      }
+
+      // bind upload box
+      const uploader = document.getElementById('log-uploader');
+      uploader.addEventListener('change', handleTrace, false);
+    }
+
+    function handleTrace() {
+      const reader = new FileReader();
+      reader.onload = (event) => replay(event.target.result);
+      const text = reader.readAsText(this.files[0]);
+    }
+
+    const delay = ms => new Promise(res => setTimeout(res, ms));
+
+    async function replay(trace) {
+      const lines = trace.split("\n");
+      for (let i = 0; i < lines.length; i++) {
+        const line = lines[i];
+        if (line.startsWith("  0 1 2 3 4 5 6 7")) {
+          const board_str = lines.slice(i + 1, i + 1 + rows).map((row_line) => row_line.slice(2));
+          i += rows;
+          const player_line = lines[++i];
+          if (player_line == "Game over!") {
+            const winner_line = lines[++i];
+            alert(winner_line.replace('X', 'black').replace('O', 'white'));
+          } else {
+            const player = player_line[16];
+            const move_line = lines[++i];
+            const row = +move_line[9];
+            const col = +move_line[12];
+            const time_line = lines[++i];
+            const time = +time_line.slice(11);
+            move(board_str, player, row, col);
+
+            await delay(time * 100000);
+          }
+        }
+      }
+    }
+
+    function move(board_str, player, row, col) {
+      for (let i = 0; i < rows; i++) {
+        for (let j = 0; j < cols; j++) {
+          const value = board_str[i][j * 2];
+          if (value != " ") {
+            squares[i][j].innerHTML = `<div class="disc ${value}"></div>`;
+          } else {
+            squares[i][j].innerHTML = '';
+          }
+        }
+      }
+
+      squares[row][col].innerHTML = `<div class="disc ${player} new"></div>`;
+    }
+  </script>
+  <style>
+    #board td.square {
+      border: 1px solid black;
+      background-color: green;
+      width: 50px;
+      height: 50px;
+    }
+
+    #board td.square .disc {
+      border-radius: 100%;
+      width: 40px;
+      height: 40px;
+      margin-left: 5px;
+    }
+
+    #board td.label {
+      font-weight: bold;
+      text-align: center;
+    }
+
+    .disc.X {
+      background-color: black;
+    }
+
+    .disc.O {
+      background-color: white;
+    }
+
+    .disc.new {
+      border: 3px solid red;
+    }
+  </style>
+  <title>Othello</title>
+</head>
+
+<body onload="setup()">
+  <table id="board">
+  </table>
+  <p>
+    Upload trace: <input type="file" id="log-uploader" />
+  </p>
+</body>
+
+</html>
