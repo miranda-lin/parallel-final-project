@@ -13,7 +13,6 @@ class MiniMax : public Solver {
     }
 
     auto moves = node->list_legal_moves();
-
     if (moves.size() == 0) {
       return evaluate_state(node);
     }

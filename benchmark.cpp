@@ -1,3 +1,5 @@
+#include <string.h>
+
 #include <chrono>
 #include <iostream>
 
@@ -19,11 +21,11 @@ int main(int argc, char **argv) {
     cout << "Too few arguments\n";
     return 1;
   }
-  // 1 - minimax, 2 - alphabeta, 3 - paraminimax, 4 - paraalphabeta
-  int solver_n = atoi(argv[1]);
-  int search_depth = atoi(argv[2]);
-  // Print game states (1/0)
-  int print_n = atoi(argv[3]);
+
+  int num_procs = atoi(argv[1]);
+  omp_set_num_threads(num_procs);
+
+  char *solver_str = argv[2];
 
   Game *game = new Game();
   MiniMax minimax;
@@ -32,60 +34,30 @@ int main(int argc, char **argv) {
   ParaMiniMax paraminimax;
   ParaAlphaBeta paraalphabeta;
 
-  // cout << "1 - minimax, 2 - alphabeta, 3 - paraminimax, 4 - paraalphabeta\n";
-  // cout << "Choose a solver: ";
-  // int solver_n;
-  // cin >> solver_n;
-
   Solver *solver;
-  switch (solver_n) {
-    case 1:
-      solver = &minimax;
-      break;
-    case 2:
-      solver = &alphabeta;
-      break;
-    case 3:
-      solver = &paraminimax;
-      break;
-    case 4:
-      solver = &paraalphabeta;
-      break;
-    default:
-      cout << "Invalid choice\n";
-      return 1;
+  if (strcmp(solver_str, "minimax") == 0) {
+    solver = &minimax;
+  } else if (strcmp(solver_str, "alphabeta") == 0) {
+    solver = &alphabeta;
+  } else if (strcmp(solver_str, "paraminimax") == 0) {
+    solver = &paraminimax;
+  } else if (strcmp(solver_str, "paraalphabeta") == 0) {
+    solver = &paraalphabeta;
+  } else {
+    cout << "Invalid choice\n";
+    return 1;
   }
 
-  // cout << "Enter search depth: ";
-  // int search_depth;
-  // cin >> search_depth;
-
-  // cout << "Print game states (1/0)? ";
-  // int print_n;
-  // cin >> print_n;
-
-  bool print_output;
-  switch (print_n) {
-    case 0:
-      print_output = false;
-      break;
-    case 1:
-      print_output = true;
-      break;
-    default:
-      cout << "Invalid choice\n";
-      return 1;
-  }
+  int search_depth = atoi(argv[3]);
 
   auto compute_start = Clock::now();
   double compute_time = 0;
+  int num_moves = 0;
 
   Player winner;
   bool tie = false;
   do {
-    if (print_output) {
-      cout << game->print_board();
-    }
+    cout << game->print_board();
     cout << "Current player: ";
     if (game->get_cur_player() == Player::BLACK) {
       cout << "X";
@@ -104,6 +76,7 @@ int main(int argc, char **argv) {
 
       Game *next_game = game->make_move(move);
       move_time += duration_cast<dsec>(Clock::now() - move_start).count();
+      num_moves++;
       printf("Move Time: %lf\n", move_time);
       if (next_game != NULL) {
         delete game;
@@ -130,5 +103,7 @@ int main(int argc, char **argv) {
     }
     cout << "\n";
   }
-  printf("Compute Time: %lf.\n", compute_time);
+
+  printf("\nTotal Compute Time: %lf\nAverage Move Time: %lf (%d moves)\n",
+         compute_time, compute_time / num_moves, num_moves);
 }
