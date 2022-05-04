@@ -1,10 +1,18 @@
 #!/bin/bash
 
 solvers=( alphabeta paraalphabeta paraminimax minimax )
-core_counts=( 1 2 4 8 16 32 64 128 )
+core_counts=( 1 2 4 8 16 32 64 )
 search_depths=( 1 3 5 7 9 11 13 15 )
 
 make othello_bench
+
+run_one () {
+  if ! test -f "$1_$2_$3.txt"
+  then
+    echo "$1: d = $2, n = $3"
+    (timeout 600 ./othello_bench $3 $1 $2 || echo "timed out") > $1_$2_$3.txt
+  fi
+}
 
 for solver in "${solvers[@]}"
 do
@@ -14,12 +22,10 @@ do
     then
       for n in "${core_counts[@]}"
       do
-        echo "${solver}: d = ${d}, n = ${n}"
-        (timeout 600 ./othello_bench ${n} ${solver} ${d} || echo "timed out") > ${solver}_${d}_${n}.txt
+        run_one $solver $d $n
       done
     else
-      echo "${solver}: d = ${d}, n = 1"
-      (timeout 600 ./othello_bench 1 ${solver} ${d} || echo "timed out") > ${solver}_${d}_1.txt
+      run_one $solver $d 1
     fi
   done
 done
