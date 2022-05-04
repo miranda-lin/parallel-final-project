@@ -14,7 +14,17 @@ using namespace chrono;
 typedef chrono::high_resolution_clock Clock;
 typedef chrono::duration<double> dsec;
 
-int main() {
+int main(int argc, char **argv) {
+  if (argc < 4) {
+    cout << "Too few arguments\n";
+    return 1;
+  }
+  // 1 - minimax, 2 - alphabeta, 3 - paraminimax, 4 - paraalphabeta
+  int solver_n = atoi(argv[1]);
+  int search_depth = atoi(argv[2]);
+  // Print game states (1/0)
+  int print_n = atoi(argv[3]);
+
   Game *game = new Game();
   MiniMax minimax;
   AlphaBeta alphabeta;
@@ -22,10 +32,10 @@ int main() {
   ParaMiniMax paraminimax;
   ParaAlphaBeta paraalphabeta;
 
-  cout << "1 - minimax, 2 - alphabeta, 3 - paraminimax, 4 - paraalphabeta\n";
-  cout << "Choose a solver: ";
-  int solver_n;
-  cin >> solver_n;
+  // cout << "1 - minimax, 2 - alphabeta, 3 - paraminimax, 4 - paraalphabeta\n";
+  // cout << "Choose a solver: ";
+  // int solver_n;
+  // cin >> solver_n;
 
   Solver *solver;
   switch (solver_n) {
@@ -46,13 +56,13 @@ int main() {
       return 1;
   }
 
-  cout << "Enter search depth: ";
-  int search_depth;
-  cin >> search_depth;
+  // cout << "Enter search depth: ";
+  // int search_depth;
+  // cin >> search_depth;
 
-  cout << "Print game states (1/0)? ";
-  int print_n;
-  cin >> print_n;
+  // cout << "Print game states (1/0)? ";
+  // int print_n;
+  // cin >> print_n;
 
   bool print_output;
   switch (print_n) {
@@ -94,7 +104,7 @@ int main() {
 
       Game *next_game = game->make_move(move);
       move_time += duration_cast<dsec>(Clock::now() - move_start).count();
-      printf("Move Time: %lf.\n", move_time);
+      printf("Move Time: %lf\n", move_time);
       if (next_game != NULL) {
         delete game;
         game = next_game;
