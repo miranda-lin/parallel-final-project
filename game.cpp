@@ -183,6 +183,8 @@ bool Game::is_move_legal(move_t move) {
     return false;
   }
 
+  int num_legal_flanks = 0;
+
   for (int i = 0; i < 8; i++) {
     coord_t direction = FLANK_DIRECTIONS[i];
     coord_t cur_pos = move.loc;
@@ -198,7 +200,10 @@ bool Game::is_move_legal(move_t move) {
       Player piece = board[cur_pos.row][cur_pos.col];
 
       if (piece == move.player) {
-        return num_chomped > 0;
+        if (num_chomped > 0) {
+          num_legal_flanks++;
+        }
+        break;
       } else if (piece == Player::NONE) {
         break;
       }
@@ -207,5 +212,5 @@ bool Game::is_move_legal(move_t move) {
     } while (is_coord_legal(cur_pos));
   }
 
-  return false;
+  return num_legal_flanks > 0;
 }
