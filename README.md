@@ -4,6 +4,8 @@
 
 Miranda Lin (miranda1), Ashwin Srinivasan (ashwins)
 
+[Watch final presentation here!](https://drive.google.com/file/d/1uSwlAH5ap7q21YhSVKk13c1R3S7rs1Di/view?usp=sharing)
+
 ## Summary
 
 We will parallelize an Othello (a variant of Reversi) minimax solver with alpha-beta pruning. We will investigate how we can speed up searching the game tree to find the best available moves as well as the alpha-beta algorithm that reduces the search space.
